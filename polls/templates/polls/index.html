@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Polls Index</title>
+</head>
+<body>
+    <h1>Polls</h1>
+    <ul>
+        {% for question in questions %}
+            <li>
+                <strong>{{ question.question_text }}</strong>
+                <ul>
+                    {% for choice in question.choice_set.all %}
+                        <li>{{ choice.choice_text }} ({{ choice.votes }} vots)</li>
+                    {% empty %}
+                        <li>No hi ha opcions disponibles.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>No hi ha preguntes disponibles.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

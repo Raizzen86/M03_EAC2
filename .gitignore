@@ -7,3 +7,5 @@
 db.sqlite3
 .coverage
 __pycache__
+.gitignore
+requeriments.txt

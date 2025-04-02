@@ -26,14 +26,22 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m venv venv
-          echo "VIRTUAL_ENV=venv" >> $GITHUB_ENV
-          echo "$PWD/venv/bin" >> $GITHUB_PATH
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+        shell: bash
 
-      - name: Verify installed packages
-        run: pip list  # Verifica que Django está instalado
+      - name: Verify Python environment
+        run: |
+          which python
+          python --version
+          pip list | grep Django || echo "Django no está instalado"
+        shell: bash
 
       - name: Run Tests
-        run: MOZ_HEADLESS=1 python manage.py test
+        run: |
+          source venv/bin/activate
+          MOZ_HEADLESS=1 python manage.py test
+        shell: bash
+
 

@@ -15,7 +15,8 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
@@ -24,17 +25,15 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python3 -m venv venv
-          source venv/bin/activate
+          python -m venv venv
+          echo "VIRTUAL_ENV=venv" >> $GITHUB_ENV
+          echo "$PWD/venv/bin" >> $GITHUB_PATH
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Verify installed packages
-        run: |
-          source venv/bin/activate
-          pip list  # Muestra los paquetes instalados
+        run: pip list  # Verifica que Django está instalado
 
       - name: Run Tests
-        run: |
-          source venv/bin/activate
-          MOZ_HEADLESS=1 python manage.py test
+        run: MOZ_HEADLESS=1 python manage.py test
+

@@ -26,22 +26,17 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-        shell: bash
+          venv/bin/pip install --upgrade pip
+          venv/bin/pip install -r requirements.txt
 
       - name: Verify Python environment
         run: |
           which python
           python --version
-          pip list | grep Django || echo "Django no está instalado"
-        shell: bash
+          venv/bin/python --version
+          venv/bin/pip list | grep Django || echo "Django no está instalado"
 
       - name: Run Tests
-        run: |
-          source venv/bin/activate
-          MOZ_HEADLESS=1 python manage.py test
-        shell: bash
+        run: venv/bin/python manage.py test
 
 

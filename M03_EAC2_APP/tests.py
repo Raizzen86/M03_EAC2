@@ -72,3 +72,30 @@ class MySeleniumTests(StaticLiveServerTestCase):
         user = User.objects.filter(username="Noel").first()
         self.assertIsNotNone(user)  # Comprovar que l'usuari existeix
         self.assertTrue(user.is_staff)  # Comprovar que l'usuari té permisos de staff
+
+    def test_noel_cannot_create_users(self):
+        """Test per comprovar que l'usuari Noel no pot crear altres usuaris."""
+
+        # Tancar sessió del superusuari
+        self.selenium.get(f"{self.live_server_url}/admin/logout/")
+        
+        # Iniciar sessió com a l'usuari Noel
+        self.selenium.get(f"{self.live_server_url}/admin/login/")
+        self.selenium.find_element(By.NAME, "username").send_keys("Noel")
+        self.selenium.find_element(By.NAME, "password").send_keys("Staff123.")
+        self.selenium.find_element(By.XPATH, '//input[@value="Log in"]').click()
+
+        # Intentar accedir a la secció d'usuaris
+        self.selenium.get(f"{self.live_server_url}/admin/auth/user/")
+        # Verificar que s'ha produït una redirecció (codi d'estat HTTP 302)
+        self.assertEqual(self.selenium.current_url, f"{self.live_server_url}/admin/login/?next=/admin/auth/user/")
+
+        # Intentar accedir a la secció de 'polls/question'
+        self.selenium.get(f"{self.live_server_url}/admin/polls/question/")
+        # Verificar que s'ha produït una redirecció (codi d'estat HTTP 302)
+        self.assertEqual(self.selenium.current_url, f"{self.live_server_url}/admin/login/?next=/admin/polls/question/")
+
+        # Intentar accedir a la secció de 'polls/choice'
+        self.selenium.get(f"{self.live_server_url}/admin/polls/choice/")
+        # Verificar que s'ha produït una redirecció (codi d'estat HTTP 302)
+        self.assertEqual(self.selenium.current_url, f"{self.live_server_url}/admin/login/?next=/admin/polls/choice/")
